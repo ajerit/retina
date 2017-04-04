@@ -1,0 +1,4 @@
+program
+    writeln true, false;
+    "unexpected string literal in quotes";
+end;

@@ -1,0 +1,11 @@
+
+
+program
+    writeln "The program is starting...";
+    with
+        number n = true;
+    do
+        writeln "This will never be printed";
+    end;
+    writeln "The program end";
+end;

@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+# Proyecto CI3725 Traductores e Interpretadores
+# Adolfo Jeritson. 12-10523
+#
+# Programa principal, recibe el archivo de entrada y revisa si la extensión es
+# correcta, luego el contenido es pasado al Lexer y se obtiene una lista de Tokens.
+# Esta lista se pasa al programa del Parser para ser analizada sintácticamente, 
+# para luego devovler el Árbol Sintáctico Abstracto.
+#
+
+require_relative 'lexer'
+require_relative 'parser'
+
+def main
+
+  # Revisamos tipo de archivo de entrada
+  $file = ARGV[0]
+  $file.match(/\w+\.rtn/)
+  if $&.nil?
+    puts "Error: El archivo de entrada no es de Retina."
+    return
+  end
+
+  # Tratamos de abrir el archivo de entrada
+  begin
+    f = File.new(ARGV[0])
+  rescue
+    puts "Error: No se puede encontrar el archivo."
+    return
+  end
+
+  # Creamos el lexer y buscamos los tokens
+  lexer = Lexer.new
+
+  while !f.eof 
+      lexer.catch_token(f.readline)
+  end
+
+  if !lexer.errores.empty? or lexer.tokens.empty?
+    lexer.print_e
+    return
+  else
+    begin
+      parser = RetinaParser.new
+      ast = parser.parse(lexer.tokens)
+      #ast.print_ast
+      ast.check
+      #ast.print_alcances
+      ast.run
+    rescue ExecError => e
+      puts e.to_s
+    rescue SyntacticError => e
+      puts e.to_s
+    rescue ContextError => e
+      puts e.to_s
+    end
+  end
+
+end
+
+main

@@ -1,0 +1,11 @@
+program
+    with
+        number x = 9;
+        number y = 5;
+    do
+        repeat x times
+            forward(50);
+            rotatel(90);
+        end;
+    end;
+end;
